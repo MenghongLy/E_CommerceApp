@@ -1,146 +1,93 @@
-E-Commerce Application
-Overview
-The Java Swing E-Commerce App is a desktop-based shopping system designed for learning and demonstration purposes. It simulates a basic online store where users can register, browse products, add items to a cart, place orders, and make payments—all within a graphical user interface built using Java Swing. The backend is fully managed with MySQL Workbench, and data is connected using JDBC.
-This project is ideal for students and beginners who want to understand how real-world e-commerce systems manage users, products, carts, orders, and payments using relational databases.tures
+# 🛒 Java Swing E-Commerce Application
 
-Product Management: Fetches product data (ID, name, price, description) from a MySQL database.
-Shopping Cart: Allows adding, removing, and clearing cart items, with in-memory cart management.
-Database Integration: Connects to a MySQL database (e_commerce) using JDBC.
-Singleton Pattern: Uses a single DataManager instance for data access across the application.
-User Support: Supports a currentUser object for potential user-specific features (e.g., personalized carts).
+This is a Java-based desktop e-commerce application built using **Java Swing** for the frontend and **MySQL** for the backend. The app manages products, shopping cart functionality, and supports future features like user authentication and persistent cart storage.
 
-Project Structure
+---
 
+## 📖 Overview
+
+This application uses a **MySQL database** to store product information and implements a singleton `DataManager` class to manage data operations like fetching product details and cart management.
+
+Product details (ID, name, price, and description) are loaded from the database, while image paths are currently hardcoded in the Java class. This structure allows for easy future integration with external storage or a database table.
+
+---
+
+## ✨ Features
+
+- **Product Management**: Fetch product data from the database.
+- **Shopping Cart**: Add, remove, and clear cart items (in-memory).
+- **Database Integration**: Uses JDBC to connect to a MySQL `e_commerce` database.
+- **Singleton Pattern**: Ensures a single instance of `DataManager` throughout the app.
+- **User Support**: Includes a `currentUser` object (for future personalization support).
+
+---
+
+## 📁 Project Structure
 src/
-DataManager.java: Singleton class that manages product and cart data, including database connectivity.
-DBConnect.java: Utility class for establishing a MySQL database connection (used as a reference for DataManager).
-Product.java: Represents a product with fields for productId, name, price, description, and imagePaths.
-CartItem.java: Represents an item in the shopping cart with a product and quantity.
-User.java: Represents a user (assumed; implementation not provided).
-ShopPanel.java: UI component for displaying products (assumed; referenced in stack trace).
-ECommerceApp.java: Main application class for GUI initialization (assumed; referenced in stack trace).
-Main.java: Entry point for the application.
+├── DataManager.java # Singleton for DB access and data handling
+├── DBConnect.java # MySQL connection utility (optional)
+├── Product.java # Product data model
+├── CartItem.java # Cart item model
+├── User.java # User model (assumed)
+├── ShopPanel.java # UI for displaying products
+├── ECommerceApp.java # GUI launcher (assumed)
+└── Main.java # Entry point of the app
 
+---
 
+## ✅ Prerequisites
 
-Prerequisites
+- Java 8 or higher
+- MySQL Server 8.0+
+- MySQL JDBC Driver (via Maven or manual JAR)
+- IntelliJ IDEA / Eclipse / NetBeans
+- (Optional) Maven for dependency management
 
-Java: JDK 8 or higher.
-MySQL: MySQL Server 8.0 or compatible version.
-MySQL JDBC Driver: Included as a Maven dependency.
-IDE: IntelliJ IDEA, Eclipse, or any Java-compatible IDE.
-Maven: For dependency management (optional; can use manual JAR inclusion).
+---
 
-Setup Instructions
-1. Clone the Repository
+## ⚙️ Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
 git clone https://github.com/MenghongLy/E_CommerceApp.git
 
-2. Configure MySQL Database
+🛠 Troubleshooting
+Issue	Solution
+SQLSyntaxErrorException	Verify that the product table exists. Use DESCRIBE product;
+Connection error	Check MySQL is running and credentials are correct
+No product shown	Make sure products are inserted via SELECT * FROM product;
+Image not loading	Ensure image paths point to actual files on your system
 
-Install MySQL Server if not already installed.
-Create a database named e_commerce:CREATE DATABASE e_commerce;
+🔮 Future Improvements
+Add a cart table for persistent cart storage
 
+Store image paths in DB
 
-Create the product table:CREATE TABLE product (
-    P_ID INT PRIMARY KEY,
-    Name VARCHAR(100) NOT NULL,
-    Price DOUBLE NOT NULL,
-    Description TEXT
-);
+Add user login and personalized cart support
 
-3. Configure Dependencies
-Add the MySQL JDBC driver to your project. For Maven, include in pom.xml:
-<dependency>
-    <groupId>mysql</groupId>
-    <artifactId>mysql-connector-java</artifactId>
-    <version>8.0.33</version>
-</dependency>
+Use a connection pool (e.g., HikariCP)
 
-Alternatively, download the MySQL Connector/J JAR and add it to your project’s classpath.
-4. Configure Database Credentials
-The DataManager class uses the following default credentials:
+Integrate SLF4J or Log4j for better logging
 
-URL: jdbc:mysql://localhost:3306/e_commerce
-User: root
-Password: menghong15
+Improve GUI with product image display
 
-Update these in DataManager.java if your MySQL setup uses different credentials:
-String url = "jdbc:mysql://localhost:3306/e_commerce";
-String user = "your-username";
-String password = "your-password";
+🤝 Contributing
+Pull requests are welcome! Please open issues for suggestions, bugs, or improvements.
 
-For security, consider using environment variables:
-String url = System.getenv("DB_URL");
-String user = System.getenv("DB_USER");
-String password = System.getenv("DB_PASSWORD");
-
-5. Run the Application
-
-Compile and run the application using your IDE or command line:mvn clean install
-java -cp target/your-app.jar Main
-
-
-The application initializes the DataManager singleton, connects to the MySQL database, and loads products into the ShopPanel UI.
-
-Usage
-
-Initialize DataManager: Access the singleton instance:DataManager dm = DataManager.getInstance();
-
-
-Fetch Products: Retrieve the product list:List<Product> products = dm.getAllProducts();
-
-
-Manage Cart: Add or remove items:dm.addToCart(product);
-dm.removeFromCart(index);
-dm.clearCart();
-
-
-Close Connection: Ensure the database connection is closed on application shutdown:dm.closeConnection();
-
-Consider adding a shutdown hook:Runtime.getRuntime().addShutdownHook(new Thread(() -> DataManager.getInstance().closeConnection()));
-
-
-
-Image Handling
-Product images are not stored in the database. Instead, the DataManager class hardcodes image paths in the getImagePathsForProduct method:
-private List<String> getImagePathsForProduct(int productId) {
-    return switch (productId) {
-        case 1 -> List.of("image/dior_sauvage.png", "image_description/suavage.jpg", "image_description/suavaged.jpg");
-        // ... other cases
-        default -> new ArrayList<>();
-    };
-}
-
-Ensure these paths point to valid image files in your application’s file system or web server. To use a different approach (e.g., a single default image or external storage), modify the getImagePathsForProduct method.
-Notes
-
-Database Schema: The product table has columns P_ID (int), Name (varchar), Price (double), and Description (text). No separate table is used for images.
-Cart Persistence: Cart items are stored in memory. To persist cart data, add a cart table and update addToCart, removeFromCart, and clearCart methods.
-Security: Avoid hardcoding database credentials in production. Use environment variables or a configuration file.
-Performance: For production, consider using a connection pool (e.g., HikariCP) instead of a single Connection.
-Error Handling: The current implementation uses System.out.println for errors. Replace with a logging framework (e.g., SLF4J) for better debugging.
-
-Troubleshooting
-
-SQLSyntaxErrorException: Ensure the product table exists with the correct columns (P_ID, Name, Price, Description). Run DESCRIBE product; in MySQL to verify.
-Connection Issues:
-Confirm MySQL is running on localhost:3306.
-Verify the e_commerce database exists.
-Check credentials (root/menghong15) are correct.
-
-
-Image Issues: Ensure image paths in getImagePathsForProduct are accessible (e.g., in a resources/images/ directory or via a web server).
-Empty Product List: Verify the product table is populated with SELECT * FROM product;.
-
-Future Improvements
-
-Add a cart table to persist cart items.
-Store image paths in the database (e.g., add an ImagePaths column to product or create a product_images table).
-Implement user authentication and link carts to specific users.
-Use a connection pool for better database performance.
-Enhance the UI in ShopPanel to display product images and details dynamically.
-
-Contributing
-Contributions are welcome! Please submit a pull request or open an issue on GitHub for bugs, features, or improvements.
-License
+📄 License
 This project is licensed under the MIT License. See the LICENSE file for details.
+
+yaml
+Copy
+Edit
+
+---
+
+Let me know if you also want:
+- A separate `CONTRIBUTING.md` file
+- SQL file exports of your schema and data
+- `.env` support for credentials setup
+- A PowerPoint/slide version for presenting this project
+
+Just ask and I’ll help you format it!
