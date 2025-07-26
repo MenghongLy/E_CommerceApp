@@ -170,4 +170,4 @@ Ensure these paths point to valid image files in your application’s file syste
 Contributions are welcome! Please submit a pull request or open an issue on GitHub for bugs, features, or improvements.
 
 ## License
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the ITE License.
